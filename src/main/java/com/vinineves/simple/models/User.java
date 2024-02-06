@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 //è tratato como uma tabela
@@ -36,6 +38,10 @@ public class User {
     @NotEmpty(groups = {CreateUser.class, UpdateUser.class})
     @Size(groups = {CreateUser.class, UpdateUser.class}, min = 8, max = 60)
     private String password;
+
+    //Tasks de usuarios
+    @OneToMany(mappedBy = "user")
+    private List<Task> tasks = new ArrayList<Task>();
 
     //Construtor vazio
     public User(){
@@ -73,7 +79,15 @@ public class User {
         this.password = password;
     }
 
-    //Verificações de Usuario
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    //Faz algumas verificações do objeto
     @Override
     public boolean equals(Object obj) {
         //Se o objeto for igal a esse == true
