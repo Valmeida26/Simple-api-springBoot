@@ -17,11 +17,9 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     private Long id;
-
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
-
     @Column(name = "description", length = 255,nullable = false)
     @NotNull
     @NotEmpty
@@ -38,9 +36,8 @@ public class Task {
         this.user = user;
         this.description = description;
     }
-
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -48,7 +45,7 @@ public class Task {
     }
 
     public User getUser() {
-        return user;
+        return this.user;
     }
 
     public void setUser(User user) {
@@ -56,37 +53,44 @@ public class Task {
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    //Faz algumas verificações do objeto
+    public Task id(Long id) {
+        setId(id);
+        return this;
+    }
+
+    public Task user(User user) {
+        setUser(user);
+        return this;
+    }
+
+    public Task description(String description) {
+        setDescription(description);
+        return this;
+    }
+
     @Override
     public boolean equals(Object obj) {
-        //Se o objeto for igal a esse == true
-        if (obj == this){
+        if (obj == this)
             return true;
-        }
-        if (obj == null){
+        if (obj == null)
             return false;
-        }
-        //Se o objeto não for uma instancia de usuario == false
-        if (!(obj instanceof Task )){
+        if (!(obj instanceof Task))
             return false;
-        }
         Task other = (Task) obj;
-        if (this.id == null) {
-            if (other.id != null){
+        if (this.id == null)
+            if (other.id != null)
                 return false;
-            }else if (!this.id.equals(other.id)){
+            else if (!this.id.equals(other.id))
                 return false;
-            }
-        }
-        return Objects.equals(this.id, other.id) && Objects.equals(this.user, other.user) &&
-                Objects.equals(this.description, other.description);
+        return Objects.equals(this.id, other.id) && Objects.equals(this.user, other.user)
+                && Objects.equals(this.description, other.description);
     }
 
     @Override
