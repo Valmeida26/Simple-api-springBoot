@@ -1,7 +1,6 @@
 package com.vinineves.simple.services;
 
 import com.vinineves.simple.models.User;
-import com.vinineves.simple.repositories.TaskRepository;
 import com.vinineves.simple.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +14,6 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private TaskRepository taskRepository;
 
     //Procurar o usuario pela id
     public User findById(Long id){
@@ -39,7 +36,6 @@ public class UserService {
         //limpar a id exixtente e criar os novos dados
 
         obj = this.userRepository.save(obj);
-        this.taskRepository.saveAll(obj.getTasks());
         return obj;
     }
 
