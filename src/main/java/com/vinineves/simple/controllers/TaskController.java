@@ -1,7 +1,6 @@
 package com.vinineves.simple.controllers;
 
 import com.vinineves.simple.models.Task;
-import com.vinineves.simple.models.User;
 import com.vinineves.simple.services.TaskService;
 import com.vinineves.simple.services.UserService;
 import jakarta.validation.Valid;
