@@ -2,6 +2,8 @@ package com.vinineves.simple.services;
 
 import com.vinineves.simple.models.User;
 import com.vinineves.simple.repositories.UserRepository;
+import com.vinineves.simple.services.exceptions.DataBindingViolationException;
+import com.vinineves.simple.services.exceptions.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,7 @@ public class UserService {
         //não dar erro na aplicação o Optional faz retorar ""
         Optional<User> user = this.userRepository.findById(id);
 
-        return user.orElseThrow(() -> new RuntimeException(
+        return user.orElseThrow(() -> new ObjectNotFoundException(
                 "Usuario não encontrado! id: " + id + ", tipo: " + User.class.getName()
         ));//Nesse return eu digo ou retorna o user ou retorna o Throw
 
@@ -54,7 +56,7 @@ public class UserService {
         try {
             this.userRepository.deleteById(id);
         }catch (Exception e){
-            throw new RuntimeException("Não é possível deletar pois há entidades relacionadas à essa id");
+            throw new DataBindingViolationException("Não é possível deletar pois há entidades relacionadas à essa id");
         }
     }
 

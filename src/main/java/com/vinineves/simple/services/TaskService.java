@@ -3,6 +3,8 @@ package com.vinineves.simple.services;
 import com.vinineves.simple.models.Task;
 import com.vinineves.simple.models.User;
 import com.vinineves.simple.repositories.TaskRepository;
+import com.vinineves.simple.services.exceptions.DataBindingViolationException;
+import com.vinineves.simple.services.exceptions.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,7 @@ public class TaskService {
 
     public Task findById(Long id){
         Optional<Task> task = this.taskRepository.findById(id);
-        return task.orElseThrow(() -> new RuntimeException(
+        return task.orElseThrow(() -> new ObjectNotFoundException(
                 "tarefa não encontrada! id: " + id + ", Tipo: " + Task.class.getName()
         ));
     }
@@ -50,7 +52,7 @@ public class TaskService {
         try {
             this.taskRepository.deleteById(id);
         }catch (Exception e){
-            throw new RuntimeException("Não é possível excluir pois há entidades relacionadas");
+            throw new DataBindingViolationException("Não é possível excluir pois há entidades relacionadas");
         }
     }
 }
