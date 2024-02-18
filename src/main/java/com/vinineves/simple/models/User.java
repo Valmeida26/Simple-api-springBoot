@@ -1,6 +1,7 @@
 package com.vinineves.simple.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vinineves.simple.models.enuns.ProfileEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +9,10 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 //è tratato como uma tabela
@@ -52,6 +56,23 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Task> tasks = new ArrayList<Task>();
+
+    //Garante que sempre que buscar o usuario traga os perfis do usuario junto
+    @ElementCollection(fetch = FetchType.EAGER)
+    //Garante que nao retorne ao usuario quais sao seus perfis
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @CollectionTable(name = "user_profile")
+    @Column(name = "profile", nullable = false)
+    //O set cria listas que não podem ter valores repetidos
+    private Set<Integer> profiles = new HashSet<>();
+
+    public Set<ProfileEnum> getProfiles(){
+        return this.profiles.stream().map(x -> ProfileEnum.toEnum(x)).collect(Collectors.toSet());
+    }
+
+    public void addProfile(ProfileEnum profileEnum){
+        this.profiles.add(profileEnum.getCode());
+    }
 
     //Construtor vazio
 //    public User(){

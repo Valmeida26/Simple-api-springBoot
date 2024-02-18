@@ -1,19 +1,25 @@
 package com.vinineves.simple.services;
 
 import com.vinineves.simple.models.User;
+import com.vinineves.simple.models.enuns.ProfileEnum;
 import com.vinineves.simple.repositories.UserRepository;
 import com.vinineves.simple.services.exceptions.DataBindingViolationException;
 import com.vinineves.simple.services.exceptions.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class UserService {
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private UserRepository userRepository;
 
@@ -36,7 +42,10 @@ public class UserService {
 
         obj.setId(null);//Garante que se o usuario tentar criar um obj com alguma id ja existente no banco ele vai
         //limpar a id exixtente e criar os novos dados
-
+        //Encripta a senha
+        obj.setPassword(this.bCryptPasswordEncoder.encode(obj.getPassword()));
+        //Garante que quando o usuario for criado ele seja criado como codigo numero 2 ou seja um USER do ProfileEnum
+        obj.setProfiles(Stream.of(ProfileEnum.USER.getCode()).collect(Collectors.toSet()));
         obj = this.userRepository.save(obj);
         return obj;
     }
@@ -47,6 +56,8 @@ public class UserService {
 
         User newObj = findById(obj.getId());//Vai pegar o id do usuario
         newObj.setPassword(obj.getPassword());//Permite que o usuario atualize apenas a senha
+        //Encripta a senha
+        newObj.setPassword(this.bCryptPasswordEncoder.encode(obj.getPassword()));
         return this.userRepository.save(newObj);//Reda a query para salvar o objeto
     }
 

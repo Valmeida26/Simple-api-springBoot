@@ -6,6 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -31,21 +32,34 @@ public class SecurityConfig {
             "/login"
     };
 
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//
+//        http.cors().and().csrf().disable();
+////        http.authorizeRequests()
+////                .antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
+////                .antMatchers(PUBLIC_MATCHERS).permitAll()
+////                .anyRequest().authenticated().and()
+////                .authenticationManager(authenticationManager);
+//        http.authorizeHttpRequests()
+//                .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
+//                .requestMatchers(PUBLIC_MATCHERS).permitAll()
+//                .anyRequest().authenticated();
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//        return http.build();
+//    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        http.cors().and().csrf().disable();
-//        http.authorizeRequests()
-//                .antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
-//                .antMatchers(PUBLIC_MATCHERS).permitAll()
-//                .anyRequest().authenticated().and()
-//                .authenticationManager(authenticationManager);
-        http.authorizeHttpRequests()
-                .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
-                .requestMatchers(PUBLIC_MATCHERS).permitAll()
-                .anyRequest().authenticated();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(request -> {
+                    request.requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll();
+                    request.requestMatchers(PUBLIC_MATCHERS).permitAll()
+                            .anyRequest().authenticated();
+                });
+        http.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
+
     }
 
     @Bean
@@ -58,6 +72,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    //serve para criptografar dados
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
