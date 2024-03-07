@@ -1,6 +1,7 @@
 package com.vinineves.simple.controllers;
 
 import com.vinineves.simple.models.Task;
+import com.vinineves.simple.models.projection.TaskProjection;
 import com.vinineves.simple.services.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,8 @@ public class TaskController {
 
     //Busca todas as tasks de usuarios por id
     @GetMapping("/user")
-    public ResponseEntity<List<Task>> findAllByUser() {
-        List<Task> objs = this.taskService.findAllByUser();
+    public ResponseEntity<List<TaskProjection>> findAllByUser() {
+        List<TaskProjection> objs = this.taskService.findAllByUser();
         return ResponseEntity.ok().body(objs);
     }
     //Criar task

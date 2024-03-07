@@ -4,6 +4,7 @@ import com.vinineves.simple.exceptions.AuthorizationException;
 import com.vinineves.simple.models.Task;
 import com.vinineves.simple.models.User;
 import com.vinineves.simple.models.enuns.ProfileEnum;
+import com.vinineves.simple.models.projection.TaskProjection;
 import com.vinineves.simple.repositories.TaskRepository;
 import com.vinineves.simple.security.UserSpringSecurity;
 import com.vinineves.simple.services.exceptions.DataBindingViolationException;
@@ -35,12 +36,12 @@ public class TaskService {
         return task;
     }
 
-    public List<Task> findAllByUser() {
+    public List<TaskProjection> findAllByUser() {
         UserSpringSecurity userSpringSecurity = UserService.authenticated();
         if (Objects.isNull(userSpringSecurity)){
             throw new AuthorizationException("Acesso Negado.");
         }
-        List<Task> tasks = this.taskRepository.findByUser_Id(userSpringSecurity.getId());
+        List<TaskProjection> tasks = this.taskRepository.findByUser_Id(userSpringSecurity.getId());
         return tasks;
     }
 

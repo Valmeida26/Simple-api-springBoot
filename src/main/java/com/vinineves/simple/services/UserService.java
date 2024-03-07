@@ -2,12 +2,16 @@ package com.vinineves.simple.services;
 
 import com.vinineves.simple.exceptions.AuthorizationException;
 import com.vinineves.simple.models.User;
+import com.vinineves.simple.models.dto.UserCreateDTO;
+import com.vinineves.simple.models.dto.UserUpdateDTO;
 import com.vinineves.simple.models.enuns.ProfileEnum;
 import com.vinineves.simple.repositories.UserRepository;
 import com.vinineves.simple.security.UserSpringSecurity;
 import com.vinineves.simple.services.exceptions.DataBindingViolationException;
 import com.vinineves.simple.services.exceptions.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import lombok.Value;
 import org.hibernate.grammars.hql.HqlParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -87,6 +91,20 @@ public class UserService {
         }catch (Exception e){
             return null;
         }
+    }
+
+    public User fromDTO(@Valid UserCreateDTO obj) {
+        User user = new User();
+        user.setUsername(obj.getUsername());
+        user.setPassword(obj.getPassword());
+        return user;
+    }
+
+    public User fromDTO(@Valid UserUpdateDTO obj) {
+        User user = new User();
+        user.setId(obj.getId());
+        user.setPassword(obj.getPassword());
+        return user;
     }
 
     //region teste

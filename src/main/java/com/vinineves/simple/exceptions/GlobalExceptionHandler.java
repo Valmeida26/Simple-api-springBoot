@@ -43,7 +43,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler imple
             WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.UNPROCESSABLE_ENTITY.value(),
-                "Validation error. Check 'errors' field for details.");
+                "Validation error. Check 'errors' field for details");
         for (FieldError fieldError : methodArgumentNotValidException.getBindingResult().getFieldErrors()) {
             errorResponse.addValidationError(fieldError.getField(), fieldError.getDefaultMessage());
         }
@@ -176,7 +176,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler imple
         Integer status = HttpStatus.UNAUTHORIZED.value();
         response.setStatus(status);
         response.setContentType("application/json");
-        ErrorResponse errorResponse = new ErrorResponse(status, "E-mail ou senha inválidos.");
+        ErrorResponse errorResponse = new ErrorResponse(status, "Username or password are invalid");
         response.getWriter().append(errorResponse.toJson());
     }
 }
