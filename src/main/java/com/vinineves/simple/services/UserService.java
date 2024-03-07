@@ -1,16 +1,21 @@
 package com.vinineves.simple.services;
 
+import com.vinineves.simple.exceptions.AuthorizationException;
 import com.vinineves.simple.models.User;
 import com.vinineves.simple.models.enuns.ProfileEnum;
 import com.vinineves.simple.repositories.UserRepository;
+import com.vinineves.simple.security.UserSpringSecurity;
 import com.vinineves.simple.services.exceptions.DataBindingViolationException;
 import com.vinineves.simple.services.exceptions.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
+import org.hibernate.grammars.hql.HqlParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,6 +31,10 @@ public class UserService {
     //Procurar o usuario pela id
     public User findById(Long id){
 
+        UserSpringSecurity userSpringSecurity = authenticated();
+        if (!Objects.nonNull(userSpringSecurity) || !userSpringSecurity.hasRole(ProfileEnum.ADMIN) && !id.equals(userSpringSecurity.getId())){
+            throw new AuthorizationException("Acesso Negado");
+        }
         //O Optional quer dizer que posso receber esse objeto User ou posso não receber e ficar vazio, entao pra
         //não dar erro na aplicação o Optional faz retorar ""
         Optional<User> user = this.userRepository.findById(id);
@@ -68,6 +77,15 @@ public class UserService {
             this.userRepository.deleteById(id);
         }catch (Exception e){
             throw new DataBindingViolationException("Não é possível deletar pois há entidades relacionadas à essa id");
+        }
+    }
+
+    //Verifica se tem alguem logado
+    public static UserSpringSecurity authenticated(){
+        try {
+            return (UserSpringSecurity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        }catch (Exception e){
+            return null;
         }
     }
 
