@@ -2,7 +2,6 @@ package com.vinineves.simple.controllers;
 
 import com.vinineves.simple.models.Task;
 import com.vinineves.simple.services.TaskService;
-import com.vinineves.simple.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +18,6 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @Autowired
-    private UserService userService;
-
     //Buscar task
     @GetMapping("/{id}")
     public ResponseEntity<Task> findbyId(@PathVariable Long id){
@@ -30,10 +26,9 @@ public class TaskController {
     }
 
     //Busca todas as tasks de usuarios por id
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Task>> findAllByUserId(@PathVariable Long userId) {
-        this.userService.findById(userId);
-        List<Task> objs = this.taskService.findAllByUserId(userId);
+    @GetMapping("/user")
+    public ResponseEntity<List<Task>> findAllByUser() {
+        List<Task> objs = this.taskService.findAllByUser();
         return ResponseEntity.ok().body(objs);
     }
     //Criar task
