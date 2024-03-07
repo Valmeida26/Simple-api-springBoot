@@ -1,5 +1,6 @@
 package com.vinineves.simple.configs;
 
+import com.vinineves.simple.security.JWTAuthenticationFilter;
 import com.vinineves.simple.security.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -48,24 +49,31 @@ public class SecurityConfig {
 //    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 //
 //        http.cors().and().csrf().disable();
-////        http.authorizeRequests()
-////                .antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
-////                .antMatchers(PUBLIC_MATCHERS).permitAll()
-////                .anyRequest().authenticated().and()
-////                .authenticationManager(authenticationManager);
-//        http.authorizeHttpRequests()
-//                .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
-//                .requestMatchers(PUBLIC_MATCHERS).permitAll()
-//                .anyRequest().authenticated();
+//        AuthenticationManagerBuilder authenticationManagerBuilder = http
+//                .getSharedObject(AuthenticationManagerBuilder.class);
+//        authenticationManagerBuilder.userDetailsService(this.userDetailsService)
+//                .passwordEncoder(bCryptPasswordEncoder());
+//        this.authenticationManager = authenticationManagerBuilder.build();
+//
+//        http.csrf(AbstractHttpConfigurer::disable)
+//                .cors(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(request -> {
+//                    request.requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll();
+//                    request.requestMatchers(PUBLIC_MATCHERS).permitAll()
+//                            .anyRequest().authenticated();
+//                });
+//
 //        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//
 //        return http.build();
 //    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        AuthenticationManagerBuilder authenticationManagerBuilder = http
+                .getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.userDetailsService(this.userDetailsService)
-                        .passwordEncoder(bCryptPasswordEncoder());
+                .passwordEncoder(bCryptPasswordEncoder());
         this.authenticationManager = authenticationManagerBuilder.build();
 
         http.csrf(AbstractHttpConfigurer::disable)
@@ -73,11 +81,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll();
                     request.requestMatchers(PUBLIC_MATCHERS).permitAll()
-                            .anyRequest().authenticated();
+                            .anyRequest().authenticated().and().authenticationManager(authenticationManager);
                 });
+
+        http.addFilter(new JWTAuthenticationFilter(this.authenticationManager, this.jwtUtil));
+
         http.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
-
     }
 
     @Bean
