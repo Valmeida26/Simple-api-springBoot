@@ -1,6 +1,7 @@
 package com.vinineves.simple.configs;
 
 import com.vinineves.simple.security.JWTAuthenticationFilter;
+import com.vinineves.simple.security.JWTAuthorizationFilter;
 import com.vinineves.simple.security.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -85,6 +86,7 @@ public class SecurityConfig {
                 });
 
         http.addFilter(new JWTAuthenticationFilter(this.authenticationManager, this.jwtUtil));
+        http.addFilter(new JWTAuthorizationFilter(this.authenticationManager, this.jwtUtil, this.userDetailsService));
 
         http.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
