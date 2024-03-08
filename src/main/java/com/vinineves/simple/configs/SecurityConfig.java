@@ -46,28 +46,6 @@ public class SecurityConfig {
             "/login"
     };
 
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//
-//        http.cors().and().csrf().disable();
-//        AuthenticationManagerBuilder authenticationManagerBuilder = http
-//                .getSharedObject(AuthenticationManagerBuilder.class);
-//        authenticationManagerBuilder.userDetailsService(this.userDetailsService)
-//                .passwordEncoder(bCryptPasswordEncoder());
-//        this.authenticationManager = authenticationManagerBuilder.build();
-//
-//        http.csrf(AbstractHttpConfigurer::disable)
-//                .cors(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(request -> {
-//                    request.requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll();
-//                    request.requestMatchers(PUBLIC_MATCHERS).permitAll()
-//                            .anyRequest().authenticated();
-//                });
-//
-//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//
-//        return http.build();
-//    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
